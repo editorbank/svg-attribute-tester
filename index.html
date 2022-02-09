@@ -3,17 +3,16 @@
 <head>
   <title>svg-attribute-tester</title>
   <style>
-   svg text { font: bold 100px Verdana, Helvetica, Arial, sans-serif; color: darkcyan;}
+   svg text { font: bold 100px Verdana, Helvetica, Arial, sans-serif; fill: darkcyan;}
   </style>
   <script>
     function up(){
       function id(id){return document.getElementById(id)}
-      function att(element, name,v){return v ? element.attributes[name].textContent=v : ""+element.attributes[name].textContent}
-      function atts(ids, atts){ids.forEach(i=>atts.forEach(a=>att(id(i),a,id(a).value)));}
+      function setAttsByIds(ids, atts){ids.forEach(i=>atts.forEach(a=>id(i).setAttribute(a,id(a).value)));}
 
-      id("theText").textContent=id('text').value;
-      atts(["theText","theTextAxes"],["x","y","transform"]);
-      atts(["theText"],["alignment-baseline","text-anchor"]);
+      id("theText").innerHTML=id('text').value;
+      setAttsByIds(["theText","theTextAxes"],["x","y","transform"]);
+      setAttsByIds(["theText"],["alignment-baseline","text-anchor"]);
     }
     if(window) window.onload = up;
   </script>
@@ -27,22 +26,24 @@
   text-anchor: <select  id="text-anchor" onchange="up()"><option>start</option><option>middle</option><option>end</option></select><br/>
   <svg width="800" height="600" viewBox="-399 -299 800 600" style="border: 10px solid #eee" xmlns="http://www.w3.org/2000/svg" version="1.1">
     <defs>
-      <g id="_theTextAxes" transform x y>
+      <g id="_theTextAxes_template">
         <path d="
           M-100,0 L250,0 
           M0,-110 L0,50
           " stroke="rgba(255,110,110,.8)" stroke-width="1"
         />
         <path d="
-        M-10,-120 L90,-120
-        M-10,-100 L90,-100
-        M-10,+100 L90,+100
-        M-10,+120 L90,+120
+        M0,-120 l50,0
+        M0,-100 l200,0
+        M0,-50  l100,0
+        M0,+50  l100,0
+        M0,+100 l200,0
+        M0,+120 l50,0
         " stroke="rgba(255,110,110,.8)" stroke-width=".5"  stroke-dasharray="10,5"
         />
         <circle r="3" fill="rgba(255,0,0,1)" />
       </g>
-      <g  id="_theScreenAxes" >
+      <g  id="_theScreenAxes_template" >
         <path d="
           M-300,0 L300,0 
           M0,-200 L0,200
@@ -52,14 +53,10 @@
       </g>
     </defs>
     
-    <use href="#_theScreenAxes" />
+    <use href="#_theScreenAxes_template" />
 
-    <text id="theText"
-      alignment-baseline="before-edge"
-      text-anchor="start"
-      transform x y
-    ></text>
-    <use id="theTextAxes" href="#_theTextAxes" transform="" x="0" y="0" />
+    <text id="theText"></text>
+    <use id="theTextAxes" href="#_theTextAxes_template" />
   </svg>
 </body>
 </html>
